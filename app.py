@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import synonyms_get
 import specific_words
 import re
 
