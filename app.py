@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import specific_words
 import re
 
-nlp = spacy.load("en_core_web_md")
+#nlp = spacy.load("en_core_web_md")
 
 app= Flask (__name__)
 #nlp = spacy.load('en_core_web_sm')
@@ -15,18 +15,20 @@ def index():
 def print_name(name):
     return 'Hi ,{}'.format(name)
 
+
+
 @app.route('/specify/<string:sent>',methods=['GET','POST'])
 def specify(sent):
     if request.method == 'GET':
         if len(sent) > 0 :
             list1=[]
-            for k in nlp(sent).noun_chunks:
+            for k in specific_words.nlp(sent).noun_chunks:
               result =[]
               start_char_position = k.start_char
               end_char_position = k.end_char
               #print(k.text)
               text1 = re.sub(r'[^A-Za-z0-9\s]', '', k.text)
-              search_term = synonyms_get.remove_stop_words(text1)
+              search_term = specific_words.remove_stop_words(text1)
               specific_terms = specific_words.search_term_wiki(search_term)
               #print(f'{search_term} : {specific_terms}')
               result=specific_terms
