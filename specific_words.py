@@ -152,19 +152,19 @@ def search_term_wiki(search_term):
 
 
 
-def search_term_FR_dataset2(target_word,text):
-        noun_chunks_u =[]
-        text= " ".join(text)
+def search_term_FR_dataset2(target_word,ds):
+    noun_chunks_u =[]
+    text= " ".join(text)
     #print(ds)
-    #for text in ds:
-        print(text)
+    for text in ds:
+        #print(text)
         doc = nlp(text)
         noun_chunks = [remove_stop_words(chunk.text.lower()) for chunk in doc.noun_chunks if chunk.text.lower().endswith(target_word) and remove_stop_words(chunk.text.lower()) != target_word.lower()]
     #print(noun_chunks)
         noun_chunks = set(noun_chunks)
         noun_chunks_u = list(noun_chunks)
 
-        return noun_chunks_u
+    return noun_chunks_u
 
 
 
