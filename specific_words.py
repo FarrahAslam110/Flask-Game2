@@ -119,7 +119,7 @@ def search_term_wiki(search_term):
     "action": "query",
     "list": "search",
     "srsearch": search_term,
-    "srlimit": 1000,  # Increase the limit of search results
+    "srlimit": 500,  # Increase the limit of search results
     "format": "json",
  }
 
@@ -179,7 +179,7 @@ def search_term_wiki2(search_term):
         "action": "query",
         "list": "search",
         "srsearch": search_term,
-        "srlimit": 1000,  # Increase the limit of search results
+        "srlimit": 500,  # Increase the limit of search results
         "format": "json",
     }
 
