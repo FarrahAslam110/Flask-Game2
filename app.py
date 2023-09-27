@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import specific_words
 import re
 
-#nlp = spacy.load("en_core_web_md")
+nlp = spacy.load("en_core_web_md")
 
 app= Flask (__name__)
 #nlp = spacy.load('en_core_web_sm')
@@ -20,7 +20,7 @@ def specify(sent):
     if request.method == 'GET':
         if len(sent) > 0 :
             list1=[]
-            for k in synonyms_get.nlp(sent).noun_chunks:
+            for k in nlp(sent).noun_chunks:
               result =[]
               start_char_position = k.start_char
               end_char_position = k.end_char
