@@ -154,7 +154,7 @@ def search_term_wiki(search_term):
 
 def search_term_FR_dataset2(target_word,ds):
     noun_chunks_u =[]
-    text= " ".join(text)
+        #text= " ".join(text)
     #print(ds)
     for text in ds:
         #print(text)
