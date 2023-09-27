@@ -5,22 +5,21 @@ import pandas as pd
 import re
 #import spacy
 #import urllib.request
-import synonyms_get
 
 # Load the spaCy model
-#import en_core_web_md
-#nlp = en_core_web_md.load()
+import en_core_web_md
+nlp = en_core_web_md.load()
 
 def categorize_noun_type(text):
     # Process the text with spaCy
-    doc = synonyms_get.nlp(text)
+    doc = nlp(text)
     #print(doc.text)
     # Check if any named entities are present (proper noun)
     if any(ent.label_ == "PERSON" or ent.label_ == "ORG" or ent.label_ == "LOC" or ent.label_ == "MONEY" or ent.label_ == "GPE" or ent.label_ == "TIME" for ent in doc.ents):
         return "Proper Noun"
 
     for token in doc:
-          doc2=synonyms_get.nlp(token.text)
+          doc2=nlp(token.text)
           for token2 in doc2:
             if token2.tag_ == "NNP" or token2.tag_ == "NNPS":
               #print(f'{token2}:{token2.tag_}')
@@ -100,8 +99,8 @@ def search_term_FR_dataset(target_word):
  noun_chunks_u =[]
  text= " ".join(text)
     #print(text)
- doc = synonyms_get.nlp(text)
- noun_chunks = [synonyms_get.remove_stop_words(chunk.text.lower()) for chunk in doc.noun_chunks if chunk.text.lower().endswith(target_word) and synonyms_get.remove_stop_words(chunk.text.lower()) != target_word.lower()]
+ doc = nlp(text)
+ noun_chunks = [remove_stop_words(chunk.text.lower()) for chunk in doc.noun_chunks if chunk.text.lower().endswith(target_word) and remove_stop_words(chunk.text.lower()) != target_word.lower()]
     #print(noun_chunks)
  unique_set = set(noun_chunks)
  noun_chunks_u = list(unique_set)
@@ -143,13 +142,41 @@ def search_term_wiki(search_term):
         #print(f"Matching Title: {title}")
         #print(f"Title:{title}  \nSnippet: {snippet}\n")
         #print(f"'{title}' is a {categorize_noun_type(title.lower())}.")
-        doc = synonyms_get.nlp(title)
+        doc = nlp(title)
         #if any(token.pos_ == "NOUN" for token in doc)
         for t in doc.noun_chunks:
-          if t.text.lower().endswith(search_term) and synonyms_get.remove_stop_words(t.text.lower()) != search_term:
-           special_words.append(synonyms_get.remove_stop_words(t.text))
+          if t.text.lower().endswith(search_term) and remove_stop_words(t.text.lower()) != search_term:
+           special_words.append(remove_stop_words(t.text))
 
  unique_set = set(special_words)
  noun_chunks_u = list(unique_set)
  return noun_chunks_u
 
+import nltk
+try:
+  nltk.data.find('tokenizers/punkt')
+except LookupError:
+  nltk.download('punkt')
+try:
+  nltk.data.find('corpora/stopwords')
+except LookupError:
+  nltk.download('stopwords')
+try:
+  nltk.data.find('corpora/wordnet')
+except LookupError:
+  nltk.download('wordnet')
+
+from nltk.corpus import wordnet,stopwords
+from nltk.tokenize import word_tokenize
+
+def remove_stop_words(text):
+  words = nltk.word_tokenize(text)
+  stop_words = set(stopwords.words('english'))
+
+  # Tokenize the text
+  # Get the list of English stop words
+  # Remove stop words from the tokenized words
+  filtered_words = [word for word in words if word.lower() not in stop_words]
+  # Join the filtered words to form a sentence
+  filtered_text = ' '.join(filtered_words)
+  return filtered_text
