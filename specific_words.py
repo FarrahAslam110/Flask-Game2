@@ -1,8 +1,8 @@
 import requests
 #from gensim.models import Word2Vec
 from nltk.tokenize import word_tokenize
-import pandas as pd
 import re
+import pandas as pd
 #import spacy
 #import urllib.request
 
@@ -107,8 +107,6 @@ def search_term_FR_dataset(target_word):
 
  return noun_chunks_u
 
- # Print the noun chunks
- # The file is automatically closed when the 'with' block is exited
 
 
 def search_term_wiki(search_term):
@@ -151,6 +149,65 @@ def search_term_wiki(search_term):
  unique_set = set(special_words)
  noun_chunks_u = list(unique_set)
  return noun_chunks_u
+
+
+
+def search_term_FR_dataset2(target_word,text):
+        noun_chunks_u =[]
+        text= " ".join(text)
+    #print(ds)
+    #for text in ds:
+        print(text)
+        doc = nlp(text)
+        noun_chunks = [remove_stop_words(chunk.text.lower()) for chunk in doc.noun_chunks if chunk.text.lower().endswith(target_word) and remove_stop_words(chunk.text.lower()) != target_word.lower()]
+    #print(noun_chunks)
+        noun_chunks = set(noun_chunks)
+        noun_chunks_u = list(noun_chunks)
+
+        return noun_chunks_u
+
+
+
+import requests
+
+def search_term_wiki2(search_term):
+    # Set the URL for the MediaWiki API
+    api_url = "https://en.wikipedia.org/w/api.php"
+
+    # Set the parameters for the API request
+    params = {
+        "action": "query",
+        "list": "search",
+        "srsearch": search_term,
+        "srlimit": 1000,  # Increase the limit of search results
+        "format": "json",
+    }
+
+    # Send the API request and handle errors
+    try:
+        response = requests.get(api_url, params=params)
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data from Wikipedia: {e}")
+        return []
+
+    # Process the search results more efficiently
+    special_words = set()  # Use a set to efficiently track unique special words
+
+    for result in data.get("query", {}).get("search", []):
+        title = result.get("title", "").lower()
+        if title.endswith(search_term) and categorize_noun_type(title) != "Proper Noun":
+            doc = nlp(title)
+            special_words.update(
+                remove_stop_words(t.text.lower())
+                for t in doc.noun_chunks
+                if t.text.lower().endswith(search_term) and remove_stop_words(t.text.lower()) != search_term
+            )
+
+    return list(special_words)
+
+
 
 import nltk
 try:
