@@ -1,7 +1,6 @@
 aiohttp
 aiosignal
 
-async-timeout
 blinker  
 blis
 catalogue
